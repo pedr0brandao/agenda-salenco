@@ -1,0 +1,2938 @@
+cat > /mnt/user-data/outputs/salenco-pro.html << 'HTMLEOF' <!DOCTYPE html>
+    <html lang="pt-BR">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Salenco Pisos — Sistema de Gestão</title>
+        <style>
+            :root {
+                --bg: #E8DCCB;
+                --surface: #F5EEE3;
+                --surface2: #EDE3D5;
+                --border: #D4C4AE;
+                --orange: #F37021;
+                --orange-dk: #D4601A;
+                --orange-glow: rgba(243, 112, 33, .18);
+                --brown: #5D4037;
+                --brown-dk: #3E2723;
+                --brown-lt: #8D6E63;
+                --text: #2C1A10;
+                --muted: #7A6655;
+                --success: #4CAF50;
+                --success-bg: rgba(76, 175, 80, .12);
+                --danger: #E53935;
+                --danger-bg: rgba(229, 57, 53, .1);
+                --warn: #F59E0B;
+                --warn-bg: rgba(245, 158, 11, .12);
+                --shadow-sm: 0 1px 4px rgba(44, 26, 16, .10);
+                --shadow: 0 4px 16px rgba(44, 26, 16, .13);
+                --shadow-lg: 0 12px 40px rgba(44, 26, 16, .2);
+                --radius: 10px;
+                --radius-lg: 16px;
+            }
+
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0
+            }
+
+            html {
+                scroll-behavior: smooth
+            }
+
+            body {
+                font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+                background: var(--bg);
+                color: var(--text);
+                min-height: 100vh;
+                -webkit-font-smoothing: antialiased
+            }
+
+            button,
+            input,
+            select,
+            textarea {
+                font-family: inherit
+            }
+
+            ::-webkit-scrollbar {
+                width: 5px;
+                height: 5px
+            }
+
+            ::-webkit-scrollbar-track {
+                background: transparent
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: var(--border);
+                border-radius: 3px
+            }
+
+            /* SCREENS */
+            .screen {
+                display: none;
+                min-height: 100vh
+            }
+
+            .screen.active {
+                display: flex
+            }
+
+            /* ══ LOGIN ══ */
+            #screen-login {
+                align-items: stretch;
+                min-height: 100vh
+            }
+
+            .login-left {
+                flex: 1;
+                background: linear-gradient(155deg, var(--brown-dk) 0%, var(--brown) 60%, #7B4F3A 100%);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 60px 56px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .login-left::before {
+                content: '';
+                position: absolute;
+                top: -120px;
+                right: -120px;
+                width: 420px;
+                height: 420px;
+                border-radius: 50%;
+                background: rgba(243, 112, 33, .13);
+                pointer-events: none
+            }
+
+            .login-left::after {
+                content: '';
+                position: absolute;
+                bottom: -80px;
+                left: -60px;
+                width: 300px;
+                height: 300px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, .04);
+                pointer-events: none
+            }
+
+            .login-brand {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+                margin-bottom: 52px;
+                position: relative;
+                z-index: 1
+            }
+
+            .login-logo {
+                width: 52px;
+                height: 52px;
+                background: var(--orange);
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 26px;
+                box-shadow: 0 4px 16px rgba(243, 112, 33, .4)
+            }
+
+            .login-brand-text {
+                color: #fff
+            }
+
+            .login-brand-text strong {
+                display: block;
+                font-size: 1.4rem;
+                font-weight: 800;
+                letter-spacing: -.3px
+            }
+
+            .login-brand-text span {
+                font-size: .8rem;
+                opacity: .65;
+                letter-spacing: .5px;
+                text-transform: uppercase
+            }
+
+            .login-tagline {
+                color: #fff;
+                position: relative;
+                z-index: 1
+            }
+
+            .login-tagline h1 {
+                font-size: 2.3rem;
+                font-weight: 800;
+                line-height: 1.18;
+                letter-spacing: -.5px;
+                margin-bottom: 16px
+            }
+
+            .login-tagline h1 em {
+                color: var(--orange);
+                font-style: normal
+            }
+
+            .login-tagline p {
+                font-size: 1rem;
+                opacity: .72;
+                line-height: 1.6;
+                max-width: 340px
+            }
+
+            .login-stats {
+                display: flex;
+                gap: 28px;
+                margin-top: 48px;
+                position: relative;
+                z-index: 1
+            }
+
+            .stat-item {
+                color: rgba(255, 255, 255, .85)
+            }
+
+            .stat-item strong {
+                display: block;
+                font-size: 1.6rem;
+                font-weight: 800;
+                color: var(--orange);
+                line-height: 1
+            }
+
+            .stat-item span {
+                font-size: .75rem;
+                opacity: .7;
+                margin-top: 2px;
+                display: block
+            }
+
+            .wood-lines {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                height: 120px;
+                overflow: hidden;
+                opacity: .08
+            }
+
+            .wood-lines span {
+                display: block;
+                height: 8px;
+                background: #fff;
+                margin-bottom: 12px;
+                border-radius: 4px;
+                transform: skewX(-8deg) scaleX(1.1)
+            }
+
+            .login-right {
+                width: 440px;
+                min-width: 320px;
+                background: var(--surface);
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                padding: 56px 44px
+            }
+
+            .login-form-header {
+                margin-bottom: 32px
+            }
+
+            .login-form-header h2 {
+                font-size: 1.55rem;
+                font-weight: 800;
+                color: var(--brown);
+                margin-bottom: 5px
+            }
+
+            .login-form-header p {
+                font-size: .88rem;
+                color: var(--muted)
+            }
+
+            .login-field {
+                margin-bottom: 18px
+            }
+
+            .login-field label {
+                display: block;
+                font-size: .82rem;
+                font-weight: 700;
+                color: var(--brown);
+                margin-bottom: 7px;
+                letter-spacing: .2px
+            }
+
+            .input-wrap {
+                position: relative
+            }
+
+            .input-wrap .input-icon {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 16px;
+                pointer-events: none
+            }
+
+            .input-wrap input {
+                width: 100%;
+                border: 1.5px solid var(--border);
+                border-radius: var(--radius);
+                padding: 12px 14px 12px 42px;
+                background: var(--bg);
+                color: var(--text);
+                font-size: .95rem;
+                transition: border-color .2s, box-shadow .2s
+            }
+
+            .input-wrap input:focus {
+                outline: none;
+                border-color: var(--orange);
+                box-shadow: 0 0 0 3px var(--orange-glow)
+            }
+
+            .input-wrap input.error {
+                border-color: var(--danger)
+            }
+
+            .show-pass {
+                position: absolute;
+                right: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 16px;
+                color: var(--muted);
+                padding: 4px
+            }
+
+            .login-error {
+                background: var(--danger-bg);
+                border: 1px solid rgba(229, 57, 53, .25);
+                border-radius: 8px;
+                padding: 10px 14px;
+                font-size: .85rem;
+                color: var(--danger);
+                margin-bottom: 16px;
+                display: none;
+                align-items: center;
+                gap: 8px
+            }
+
+            .login-error.show {
+                display: flex
+            }
+
+            .btn-login {
+                width: 100%;
+                background: var(--orange);
+                color: #fff;
+                border: none;
+                border-radius: var(--radius);
+                padding: 14px;
+                font-size: 1rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: background .2s, transform .15s, box-shadow .2s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                margin-top: 4px
+            }
+
+            .btn-login:hover {
+                background: var(--orange-dk);
+                transform: translateY(-1px);
+                box-shadow: 0 6px 20px rgba(243, 112, 33, .35)
+            }
+
+            .login-hint {
+                margin-top: 24px;
+                padding: 14px;
+                background: rgba(93, 64, 55, .06);
+                border-radius: 8px;
+                border-left: 3px solid var(--orange)
+            }
+
+            .login-hint p {
+                font-size: .78rem;
+                color: var(--muted);
+                line-height: 1.55
+            }
+
+            .login-hint strong {
+                color: var(--brown)
+            }
+
+            @media(max-width:820px) {
+                #screen-login {
+                    flex-direction: column
+                }
+
+                .login-left {
+                    padding: 36px 24px 30px;
+                    min-height: auto
+                }
+
+                .login-tagline h1 {
+                    font-size: 1.65rem
+                }
+
+                .login-stats {
+                    gap: 18px;
+                    margin-top: 28px
+                }
+
+                .login-right {
+                    width: 100%;
+                    padding: 32px 22px 44px
+                }
+
+                .wood-lines {
+                    display: none
+                }
+            }
+
+            /* ══ APP ══ */
+            #screen-app {
+                flex-direction: column;
+                min-height: 100vh
+            }
+
+            .topbar {
+                background: var(--brown);
+                height: 62px;
+                display: flex;
+                align-items: center;
+                padding: 0 18px;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                box-shadow: 0 2px 12px rgba(0, 0, 0, .22);
+                gap: 14px
+            }
+
+            .topbar-brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                color: #fff;
+                font-weight: 800;
+                font-size: 1.05rem;
+                letter-spacing: -.2px
+            }
+
+            .topbar-logo {
+                width: 36px;
+                height: 36px;
+                background: var(--orange);
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                flex-shrink: 0
+            }
+
+            .topbar-brand span {
+                color: var(--orange)
+            }
+
+            .topbar-center {
+                flex: 1
+            }
+
+            .topbar-right {
+                display: flex;
+                align-items: center;
+                gap: 10px
+            }
+
+            .user-chip {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                background: rgba(255, 255, 255, .12);
+                border-radius: 24px;
+                padding: 5px 12px 5px 6px;
+                cursor: pointer;
+                transition: background .2s
+            }
+
+            .user-chip:hover {
+                background: rgba(255, 255, 255, .2)
+            }
+
+            .user-avatar {
+                width: 28px;
+                height: 28px;
+                background: var(--orange);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                font-weight: 700;
+                color: #fff;
+                flex-shrink: 0
+            }
+
+            .user-chip span {
+                font-size: .82rem;
+                color: rgba(255, 255, 255, .9);
+                font-weight: 600
+            }
+
+            @media(max-width:480px) {
+                .user-chip span {
+                    display: none
+                }
+            }
+
+            .hamburger {
+                background: none;
+                border: none;
+                cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                padding: 6px;
+                border-radius: 6px;
+                transition: background .2s
+            }
+
+            .hamburger:hover {
+                background: rgba(255, 255, 255, .12)
+            }
+
+            .hamburger span {
+                display: block;
+                width: 22px;
+                height: 2px;
+                background: #fff;
+                border-radius: 2px;
+                transition: transform .3s, opacity .3s
+            }
+
+            .hamburger.open span:nth-child(1) {
+                transform: translateY(7px) rotate(45deg)
+            }
+
+            .hamburger.open span:nth-child(2) {
+                opacity: 0
+            }
+
+            .hamburger.open span:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg)
+            }
+
+            .nav-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, .32);
+                z-index: 98
+            }
+
+            .nav-overlay.show {
+                display: block
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 62px;
+                left: -260px;
+                width: 240px;
+                background: var(--brown-dk);
+                height: calc(100vh - 62px);
+                z-index: 99;
+                transition: left .3s cubic-bezier(.4, 0, .2, 1);
+                box-shadow: 4px 0 20px rgba(0, 0, 0, .25);
+                display: flex;
+                flex-direction: column;
+                padding: 14px 0;
+                overflow-y: auto
+            }
+
+            .sidebar.open {
+                left: 0
+            }
+
+            .sidebar-section {
+                padding: 8px 14px 4px;
+                font-size: .68rem;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                color: rgba(255, 255, 255, .35);
+                margin-top: 6px
+            }
+
+            .sidebar-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 11px 18px;
+                color: rgba(255, 255, 255, .72);
+                cursor: pointer;
+                font-size: .9rem;
+                font-weight: 500;
+                transition: background .18s, color .18s;
+                border: none;
+                background: none;
+                width: 100%;
+                text-align: left;
+                border-left: 3px solid transparent
+            }
+
+            .sidebar-item:hover {
+                background: rgba(255, 255, 255, .07);
+                color: #fff
+            }
+
+            .sidebar-item.active {
+                background: rgba(243, 112, 33, .15);
+                color: #fff;
+                border-left-color: var(--orange);
+                font-weight: 700
+            }
+
+            .sidebar-item .si-icon {
+                font-size: 17px;
+                flex-shrink: 0
+            }
+
+            .sidebar-item .si-badge {
+                margin-left: auto;
+                background: var(--orange);
+                color: #fff;
+                font-size: .68rem;
+                font-weight: 700;
+                border-radius: 10px;
+                padding: 1px 7px;
+                min-width: 20px;
+                text-align: center
+            }
+
+            .sidebar-divider {
+                height: 1px;
+                background: rgba(255, 255, 255, .07);
+                margin: 8px 16px
+            }
+
+            .sidebar-footer {
+                margin-top: auto;
+                padding: 0
+            }
+
+            .app-body {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden
+            }
+
+            .app-content {
+                flex: 1;
+                padding: 22px 18px;
+                max-width: 1140px;
+                width: 100%;
+                margin: 0 auto
+            }
+
+            .page-header {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 12px;
+                margin-bottom: 22px
+            }
+
+            .page-header h2 {
+                font-size: 1.4rem;
+                font-weight: 800;
+                color: var(--brown);
+                letter-spacing: -.3px
+            }
+
+            .page-header p {
+                font-size: .85rem;
+                color: var(--muted);
+                margin-top: 2px
+            }
+
+            /* STATS */
+            .stats-row {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+                gap: 12px;
+                margin-bottom: 22px
+            }
+
+            .stat-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                padding: 16px 18px;
+                box-shadow: var(--shadow-sm);
+                position: relative;
+                overflow: hidden
+            }
+
+            .stat-card::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 56px;
+                height: 56px;
+                border-radius: 0 0 0 56px;
+                background: var(--orange-glow)
+            }
+
+            .stat-card .sc-label {
+                font-size: .72rem;
+                font-weight: 700;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: .5px;
+                margin-bottom: 7px
+            }
+
+            .stat-card .sc-value {
+                font-size: 1.85rem;
+                font-weight: 800;
+                color: var(--brown);
+                line-height: 1
+            }
+
+            .stat-card .sc-icon {
+                position: absolute;
+                top: 14px;
+                right: 14px;
+                font-size: 20px;
+                z-index: 1
+            }
+
+            .stat-card .sc-sub {
+                font-size: .72rem;
+                color: var(--muted);
+                margin-top: 4px
+            }
+
+            /* BUTTONS */
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 7px;
+                padding: 9px 18px;
+                border-radius: var(--radius);
+                font-size: .88rem;
+                font-weight: 700;
+                cursor: pointer;
+                border: none;
+                transition: background .2s, transform .15s, box-shadow .2s;
+                white-space: nowrap
+            }
+
+            .btn:hover {
+                transform: translateY(-1px)
+            }
+
+            .btn-primary {
+                background: var(--orange);
+                color: #fff
+            }
+
+            .btn-primary:hover {
+                background: var(--orange-dk);
+                box-shadow: 0 4px 14px rgba(243, 112, 33, .32)
+            }
+
+            .btn-secondary {
+                background: none;
+                border: 1.5px solid var(--border);
+                color: var(--muted)
+            }
+
+            .btn-secondary:hover {
+                background: var(--bg);
+                border-color: var(--brown-lt);
+                color: var(--brown)
+            }
+
+            .btn-danger {
+                background: var(--danger);
+                color: #fff
+            }
+
+            .btn-danger:hover {
+                background: #c62828
+            }
+
+            .btn-warn {
+                background: var(--warn);
+                color: #fff
+            }
+
+            .btn-icon {
+                background: none;
+                border: 1.5px solid var(--border);
+                border-radius: 8px;
+                width: 34px;
+                height: 34px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-size: 15px;
+                transition: background .18s, border-color .18s
+            }
+
+            .btn-icon:hover {
+                background: var(--bg);
+                border-color: var(--orange)
+            }
+
+            .btn-icon.del:hover {
+                border-color: var(--danger);
+                background: var(--danger-bg)
+            }
+
+            /* VIEW TOGGLE */
+            .view-toggle {
+                display: inline-flex;
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                overflow: hidden;
+                margin-bottom: 18px
+            }
+
+            .view-toggle button {
+                padding: 8px 18px;
+                border: none;
+                background: none;
+                cursor: pointer;
+                font-size: .85rem;
+                font-weight: 600;
+                color: var(--muted);
+                transition: background .2s, color .2s
+            }
+
+            .view-toggle button.active {
+                background: var(--orange);
+                color: #fff
+            }
+
+            /* TOOLBAR */
+            .toolbar {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                flex-wrap: wrap;
+                margin-bottom: 16px
+            }
+
+            .toolbar-filters {
+                display: flex;
+                gap: 8px;
+                flex: 1;
+                flex-wrap: wrap
+            }
+
+            .toolbar input,
+            .toolbar select {
+                border: 1.5px solid var(--border);
+                border-radius: 8px;
+                padding: 8px 12px;
+                background: var(--surface);
+                color: var(--text);
+                font-size: .85rem;
+                min-width: 130px;
+                transition: border-color .2s
+            }
+
+            .toolbar input:focus,
+            .toolbar select:focus {
+                outline: none;
+                border-color: var(--orange);
+                box-shadow: 0 0 0 2px var(--orange-glow)
+            }
+
+            /* TABLE */
+            .table-wrap {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                overflow: hidden;
+                box-shadow: var(--shadow-sm)
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: .88rem
+            }
+
+            thead th {
+                background: var(--surface2);
+                padding: 11px 14px;
+                text-align: left;
+                font-size: .72rem;
+                font-weight: 700;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: .5px;
+                border-bottom: 1px solid var(--border);
+                white-space: nowrap
+            }
+
+            tbody tr {
+                border-bottom: 1px solid var(--border);
+                transition: background .15s
+            }
+
+            tbody tr:last-child {
+                border-bottom: none
+            }
+
+            tbody tr:hover {
+                background: var(--surface2)
+            }
+
+            tbody td {
+                padding: 11px 14px;
+                vertical-align: middle
+            }
+
+            tbody tr.done-row td {
+                opacity: .58
+            }
+
+            tbody tr.done-row .td-name {
+                text-decoration: line-through
+            }
+
+            .td-name {
+                font-weight: 700;
+                color: var(--brown)
+            }
+
+            .td-sub {
+                font-size: .76rem;
+                color: var(--muted);
+                margin-top: 1px
+            }
+
+            .td-actions {
+                display: flex;
+                gap: 5px
+            }
+
+            @media(max-width:780px) {
+
+                .col-end,
+                .col-area,
+                .col-val {
+                    display: none
+                }
+            }
+
+            @media(max-width:580px) {
+
+                .col-tip,
+                .col-dur {
+                    display: none
+                }
+            }
+
+            /* TAGS */
+            .tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 3px;
+                border-radius: 20px;
+                padding: 3px 10px;
+                font-size: .72rem;
+                font-weight: 700;
+                white-space: nowrap
+            }
+
+            .tag-agendado {
+                background: rgba(93, 64, 55, .1);
+                color: var(--brown)
+            }
+
+            .tag-andamento {
+                background: rgba(243, 112, 33, .14);
+                color: var(--orange-dk)
+            }
+
+            .tag-concluido {
+                background: var(--success-bg);
+                color: #2e7d32
+            }
+
+            .tag-tipo {
+                background: rgba(141, 110, 99, .12);
+                color: var(--brown-lt)
+            }
+
+            .tag-warn {
+                background: var(--warn-bg);
+                color: #92400e
+            }
+
+            /* CHECK CIRCLE */
+            .check-circle {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                border: 2px solid var(--border);
+                background: none;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 12px;
+                color: transparent;
+                transition: all .2s;
+                flex-shrink: 0
+            }
+
+            .check-circle.checked {
+                background: var(--success);
+                border-color: var(--success);
+                color: #fff
+            }
+
+            /* MOBILE CARDS */
+            .card-list {
+                display: none
+            }
+
+            @media(max-width:600px) {
+                .table-wrap {
+                    display: none
+                }
+
+                .card-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px
+                }
+            }
+
+            .service-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                padding: 13px 15px;
+                display: flex;
+                gap: 11px;
+                box-shadow: var(--shadow-sm);
+                position: relative;
+                overflow: hidden
+            }
+
+            .service-card::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                bottom: 0;
+                width: 4px;
+                background: var(--orange);
+                border-radius: 4px 0 0 4px
+            }
+
+            .service-card.done::before {
+                background: var(--success)
+            }
+
+            .sc-body {
+                flex: 1;
+                min-width: 0
+            }
+
+            .sc-title {
+                font-weight: 700;
+                color: var(--brown);
+                font-size: .93rem
+            }
+
+            .sc-meta {
+                font-size: .76rem;
+                color: var(--muted);
+                margin-top: 3px;
+                line-height: 1.5
+            }
+
+            .sc-tags {
+                display: flex;
+                gap: 5px;
+                flex-wrap: wrap;
+                margin-top: 5px
+            }
+
+            .sc-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                align-items: flex-end
+            }
+
+            /* CALENDAR */
+            .cal-nav {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 14px
+            }
+
+            .cal-nav h3 {
+                font-size: 1.05rem;
+                font-weight: 800;
+                color: var(--brown);
+                text-transform: capitalize
+            }
+
+            .cal-nav button {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                width: 36px;
+                height: 36px;
+                cursor: pointer;
+                font-size: 20px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background .2s, color .2s
+            }
+
+            .cal-nav button:hover {
+                background: var(--orange);
+                color: #fff;
+                border-color: var(--orange)
+            }
+
+            .cal-grid {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                gap: 2px;
+                background: var(--border);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                overflow: hidden
+            }
+
+            .cal-head {
+                background: var(--surface2);
+                padding: 8px 4px;
+                text-align: center;
+                font-size: .7rem;
+                font-weight: 700;
+                color: var(--muted);
+                text-transform: uppercase
+            }
+
+            .cal-cell {
+                background: var(--surface);
+                min-height: 92px;
+                padding: 6px;
+                cursor: default;
+                transition: background .15s
+            }
+
+            @media(max-width:560px) {
+                .cal-cell {
+                    min-height: 62px;
+                    padding: 4px
+                }
+            }
+
+            .cal-cell.other {
+                background: var(--surface2);
+                opacity: .5
+            }
+
+            .cal-cell.today {
+                background: rgba(243, 112, 33, .06)
+            }
+
+            .cal-cell.overloaded {
+                background: rgba(229, 57, 53, .05)
+            }
+
+            .cal-day {
+                font-size: .74rem;
+                font-weight: 700;
+                color: var(--brown-lt);
+                margin-bottom: 3px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between
+            }
+
+            .cal-cell.today .cal-day {
+                color: var(--orange);
+                font-weight: 900
+            }
+
+            .cal-limit-badge {
+                font-size: .6rem;
+                background: var(--danger);
+                color: #fff;
+                border-radius: 8px;
+                padding: 1px 5px;
+                font-weight: 700
+            }
+
+            .cal-limit-badge.warn {
+                background: var(--warn)
+            }
+
+            .cal-dot {
+                font-size: .61rem;
+                line-height: 1.3;
+                border-radius: 4px;
+                padding: 1px 5px;
+                margin-bottom: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                cursor: pointer;
+                transition: opacity .15s;
+                color: #fff
+            }
+
+            .cal-dot:hover {
+                opacity: .82
+            }
+
+            .cal-dot.t-raspagem {
+                background: #8B4513
+            }
+
+            .cal-dot.t-lixamento {
+                background: #CD853F
+            }
+
+            .cal-dot.t-instalacao {
+                background: #556B2F
+            }
+
+            .cal-dot.t-restauracao {
+                background: #8B008B
+            }
+
+            .cal-dot.t-manutencao {
+                background: #1565C0
+            }
+
+            .cal-dot.t-outro {
+                background: #546E7A
+            }
+
+            .cal-dot.done-dot {
+                opacity: .55
+            }
+
+            .cal-more {
+                font-size: .61rem;
+                color: var(--orange);
+                font-weight: 700;
+                cursor: pointer;
+                padding: 1px 4px
+            }
+
+            /* Multi-day span bar */
+            .cal-span {
+                font-size: .61rem;
+                border-radius: 0;
+                padding: 2px 5px;
+                margin-bottom: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                cursor: pointer;
+                color: #fff;
+                opacity: .85
+            }
+
+            .cal-span.span-start {
+                border-radius: 4px 0 0 4px
+            }
+
+            .cal-span.span-end {
+                border-radius: 0 4px 4px 0
+            }
+
+            .cal-span.span-mid {
+                border-radius: 0
+            }
+
+            /* CAPACITY INDICATOR */
+            .cap-bar {
+                margin-top: 4px
+            }
+
+            .cap-row {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                font-size: .7rem;
+                color: var(--muted);
+                margin-bottom: 3px
+            }
+
+            .cap-track {
+                flex: 1;
+                height: 5px;
+                background: var(--border);
+                border-radius: 3px;
+                overflow: hidden
+            }
+
+            .cap-fill {
+                height: 100%;
+                border-radius: 3px;
+                transition: width .3s
+            }
+
+            .cap-fill.ok {
+                background: var(--success)
+            }
+
+            .cap-fill.warn {
+                background: var(--warn)
+            }
+
+            .cap-fill.full {
+                background: var(--danger)
+            }
+
+            /* MODAL */
+            .modal-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(44, 26, 16, .52);
+                z-index: 300;
+                align-items: center;
+                justify-content: center;
+                padding: 16px;
+                backdrop-filter: blur(3px)
+            }
+
+            .modal-overlay.open {
+                display: flex
+            }
+
+            .modal {
+                background: var(--surface);
+                border-radius: var(--radius-lg);
+                width: 100%;
+                max-width: 540px;
+                max-height: 93vh;
+                overflow-y: auto;
+                box-shadow: var(--shadow-lg);
+                animation: modalIn .22s ease
+            }
+
+            @keyframes modalIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(14px) scale(.97)
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1)
+                }
+            }
+
+            .modal-header {
+                padding: 20px 24px 16px;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                position: sticky;
+                top: 0;
+                background: var(--surface);
+                z-index: 1
+            }
+
+            .modal-header h3 {
+                font-size: 1.1rem;
+                font-weight: 800;
+                color: var(--brown)
+            }
+
+            .modal-close {
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 20px;
+                color: var(--muted);
+                width: 32px;
+                height: 32px;
+                border-radius: 6px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: background .15s
+            }
+
+            .modal-close:hover {
+                background: var(--bg)
+            }
+
+            .modal-body {
+                padding: 20px 24px 24px
+            }
+
+            .form-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 13px
+            }
+
+            @media(max-width:440px) {
+                .form-grid {
+                    grid-template-columns: 1fr
+                }
+            }
+
+            .form-full {
+                grid-column: 1/-1
+            }
+
+            .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 5px
+            }
+
+            .form-group label {
+                font-size: .8rem;
+                font-weight: 700;
+                color: var(--brown);
+                letter-spacing: .1px
+            }
+
+            .form-group label .req {
+                color: var(--orange)
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                border: 1.5px solid var(--border);
+                border-radius: 8px;
+                padding: 9px 12px;
+                background: var(--bg);
+                color: var(--text);
+                font-size: .9rem;
+                transition: border-color .18s, box-shadow .18s
+            }
+
+            .form-group input:focus,
+            .form-group select:focus,
+            .form-group textarea:focus {
+                outline: none;
+                border-color: var(--orange);
+                box-shadow: 0 0 0 3px var(--orange-glow)
+            }
+
+            .form-group textarea {
+                resize: vertical;
+                min-height: 72px
+            }
+
+            .modal-footer {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                margin-top: 20px
+            }
+
+            /* CONFLICT BANNER inside modal */
+            .conflict-banner {
+                background: var(--warn-bg);
+                border: 1px solid rgba(245, 158, 11, .35);
+                border-radius: 8px;
+                padding: 12px 14px;
+                margin-bottom: 16px;
+                display: none
+            }
+
+            .conflict-banner.show {
+                display: block
+            }
+
+            .conflict-banner .cb-title {
+                font-size: .85rem;
+                font-weight: 700;
+                color: #92400e;
+                margin-bottom: 4px
+            }
+
+            .conflict-banner .cb-body {
+                font-size: .8rem;
+                color: #78350f;
+                line-height: 1.5
+            }
+
+            .conflict-banner .cb-days {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 4px;
+                margin-top: 6px
+            }
+
+            .conflict-banner .cb-day {
+                background: rgba(245, 158, 11, .2);
+                border: 1px solid rgba(245, 158, 11, .4);
+                border-radius: 5px;
+                padding: 2px 8px;
+                font-size: .73rem;
+                font-weight: 700;
+                color: #92400e
+            }
+
+            /* ALERT MODAL */
+            .alert-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(44, 26, 16, .55);
+                z-index: 500;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                backdrop-filter: blur(3px)
+            }
+
+            .alert-overlay.open {
+                display: flex
+            }
+
+            .alert-box {
+                background: var(--surface);
+                border-radius: var(--radius-lg);
+                padding: 0;
+                max-width: 420px;
+                width: 100%;
+                box-shadow: var(--shadow-lg);
+                animation: modalIn .22s ease;
+                overflow: hidden
+            }
+
+            .alert-header {
+                padding: 20px 22px 16px;
+                border-bottom: 1px solid var(--border)
+            }
+
+            .alert-header .alert-icon {
+                font-size: 36px;
+                margin-bottom: 8px
+            }
+
+            .alert-header h4 {
+                font-size: 1.1rem;
+                font-weight: 800;
+                color: var(--brown)
+            }
+
+            .alert-body {
+                padding: 16px 22px
+            }
+
+            .alert-body p {
+                font-size: .9rem;
+                color: var(--muted);
+                line-height: 1.6
+            }
+
+            .alert-body .alert-detail {
+                margin-top: 10px;
+                background: var(--surface2);
+                border-radius: 8px;
+                padding: 10px 14px;
+                font-size: .82rem;
+                color: var(--text)
+            }
+
+            .alert-body .alert-detail b {
+                color: var(--danger)
+            }
+
+            .alert-footer {
+                padding: 14px 22px 20px;
+                display: flex;
+                gap: 10px;
+                justify-content: flex-end
+            }
+
+            /* CONFIRM */
+            .confirm-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(44, 26, 16, .5);
+                z-index: 400;
+                align-items: center;
+                justify-content: center;
+                padding: 20px;
+                backdrop-filter: blur(2px)
+            }
+
+            .confirm-overlay.open {
+                display: flex
+            }
+
+            .confirm-box {
+                background: var(--surface);
+                border-radius: var(--radius-lg);
+                padding: 28px;
+                max-width: 360px;
+                width: 100%;
+                text-align: center;
+                box-shadow: var(--shadow-lg);
+                animation: modalIn .2s ease
+            }
+
+            .confirm-icon {
+                font-size: 40px;
+                margin-bottom: 10px
+            }
+
+            .confirm-box h4 {
+                font-size: 1.1rem;
+                color: var(--brown);
+                margin-bottom: 5px
+            }
+
+            .confirm-box p {
+                font-size: .88rem;
+                color: var(--muted);
+                margin-bottom: 20px
+            }
+
+            .confirm-btns {
+                display: flex;
+                gap: 10px;
+                justify-content: center
+            }
+
+            /* PROFILE */
+            #view-profile .profile-card {
+                background: var(--surface);
+                border: 1px solid var(--border);
+                border-radius: var(--radius-lg);
+                padding: 26px;
+                max-width: 480px;
+                box-shadow: var(--shadow-sm)
+            }
+
+            .profile-avatar-lg {
+                width: 68px;
+                height: 68px;
+                background: var(--orange);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 26px;
+                font-weight: 800;
+                color: #fff;
+                margin-bottom: 14px
+            }
+
+            .profile-card h3 {
+                font-size: 1.15rem;
+                color: var(--brown);
+                font-weight: 800
+            }
+
+            .profile-card p {
+                font-size: .87rem;
+                color: var(--muted);
+                margin-top: 2px
+            }
+
+            .profile-divider {
+                height: 1px;
+                background: var(--border);
+                margin: 18px 0
+            }
+
+            .profile-row {
+                display: flex;
+                justify-content: space-between;
+                font-size: .87rem;
+                padding: 7px 0;
+                border-bottom: 1px solid var(--border)
+            }
+
+            .profile-row:last-child {
+                border-bottom: none
+            }
+
+            .profile-row span:first-child {
+                color: var(--muted)
+            }
+
+            .profile-row span:last-child {
+                font-weight: 600;
+                color: var(--brown)
+            }
+
+            /* EMPTY */
+            .empty {
+                text-align: center;
+                padding: 56px 20px;
+                color: var(--muted)
+            }
+
+            .empty-icon {
+                font-size: 48px;
+                margin-bottom: 12px
+            }
+
+            .empty h3 {
+                font-size: 1.05rem;
+                color: var(--brown);
+                margin-bottom: 5px
+            }
+
+            .empty p {
+                font-size: .88rem
+            }
+
+            /* LEGEND */
+            .legend {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-bottom: 14px
+            }
+
+            .legend-item {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+                font-size: .75rem;
+                color: var(--muted)
+            }
+
+            .legend-dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 3px;
+                flex-shrink: 0
+            }
+
+            /* TOAST */
+            #toast {
+                position: fixed;
+                bottom: 22px;
+                left: 50%;
+                transform: translateX(-50%) translateY(100px);
+                background: var(--brown-dk);
+                color: #fff;
+                padding: 11px 22px;
+                border-radius: 24px;
+                font-size: .88rem;
+                font-weight: 600;
+                z-index: 999;
+                transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+                pointer-events: none;
+                white-space: nowrap;
+                box-shadow: 0 6px 24px rgba(0, 0, 0, .25)
+            }
+
+            #toast.show {
+                transform: translateX(-50%) translateY(0)
+            }
+
+            #toast.success {
+                background: #2e7d32
+            }
+
+            #toast.error {
+                background: var(--danger)
+            }
+
+            #toast.warn {
+                background: var(--warn);
+                color: #fff
+            }
+
+            /* DURATION PREVIEW */
+            .dur-preview {
+                font-size: .78rem;
+                color: var(--muted);
+                margin-top: 4px;
+                padding: 6px 10px;
+                background: var(--surface2);
+                border-radius: 7px;
+                display: none
+            }
+
+            .dur-preview.show {
+                display: block
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <!-- ══════════ LOGIN ══════════ -->
+        <div id="screen-login" class="screen active">
+            <div class="login-left">
+                <div class="login-brand">
+                    <div class="login-logo">🪵</div>
+                    <div class="login-brand-text">
+                        <strong>Salenco Pisos</strong>
+                        <span>Sistema de Gestão</span>
+                    </div>
+                </div>
+                <div class="login-tagline">
+                    <h1>Controle total<br>das suas <em>obras</em> e<br>serviços.</h1>
+                    <p>Agendamento inteligente com controle de capacidade diária e visualização completa no calendário.
+                    </p>
+                </div>
+                <div class="login-stats">
+                    <div class="stat-item"><strong id="ls-total">0</strong><span>Serviços cadastrados</span></div>
+                    <div class="stat-item"><strong id="ls-pend">0</strong><span>Pendentes</span></div>
+                    <div class="stat-item"><strong id="ls-users">7</strong><span>Usuários ativos</span></div>
+                </div>
+                <div class="wood-lines"><span></span><span></span><span></span><span></span><span
+                        style="width:80%"></span><span style="width:90%"></span></div>
+            </div>
+            <div class="login-right">
+                <div class="login-form-header">
+                    <h2>Bem-vindo de volta</h2>
+                    <p>Acesse sua conta para gerenciar os serviços</p>
+                </div>
+                <div class="login-error" id="loginError"><span>⚠️</span><span id="loginErrorMsg">Usuário ou senha
+                        incorretos.</span></div>
+                <div class="login-field">
+                    <label>Usuário</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">👤</span>
+                        <input type="text" id="loginUser" placeholder="Digite seu usuário" autocomplete="username">
+                    </div>
+                </div>
+                <div class="login-field">
+                    <label>Senha</label>
+                    <div class="input-wrap">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="loginPass" placeholder="Digite sua senha"
+                            autocomplete="current-password">
+                        <button class="show-pass" type="button" onclick="togglePass()">👁️</button>
+                    </div>
+                </div>
+                <button class="btn-login" id="btnLogin" onclick="doLogin()"><span id="btnLoginTxt">Entrar no
+                        sistema</span><span>→</span></button>
+                <div class="login-hint">
+                    <p><strong>Credenciais de acesso:</strong><br>
+                        admin / <strong>salenco2025</strong> · claudinei / <strong>claudinei123</strong><br>
+                        anapaula / <strong>anapaula123</strong> · ramon / <strong>ramon123</strong><br>
+                        pedro / <strong>pedro123</strong> · katia / <strong>katia123</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══════════ APP ══════════ -->
+        <div id="screen-app" class="screen">
+            <header class="topbar">
+                <button class="hamburger" id="hamburger"
+                    onclick="toggleSidebar()"><span></span><span></span><span></span></button>
+                <div class="topbar-brand">
+                    <div class="topbar-logo">🪵</div>
+                    Salenco <span>Pisos</span>
+                </div>
+                <div class="topbar-center"></div>
+                <div class="topbar-right">
+                    <div class="user-chip" onclick="navigate('profile')">
+                        <div class="user-avatar" id="userAvatar">A</div>
+                        <span id="userNameChip">Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="app-body">
+                <div class="nav-overlay" id="navOverlay" onclick="closeSidebar()"></div>
+                <nav class="sidebar" id="sidebar">
+                    <div class="sidebar-section">Principal</div>
+                    <button class="sidebar-item active" data-view="dashboard" onclick="navigate('dashboard')"><span
+                            class="si-icon">📊</span> Dashboard</button>
+                    <button class="sidebar-item" data-view="services" onclick="navigate('services')"><span
+                            class="si-icon">📋</span> Serviços <span class="si-badge"
+                            id="badgePending">0</span></button>
+                    <button class="sidebar-item" data-view="calendar" onclick="navigate('calendar')"><span
+                            class="si-icon">📅</span> Calendário</button>
+                    <div class="sidebar-divider"></div>
+                    <div class="sidebar-section">Conta</div>
+                    <button class="sidebar-item" data-view="profile" onclick="navigate('profile')"><span
+                            class="si-icon">👤</span> Meu Perfil</button>
+                    <div class="sidebar-footer">
+                        <div class="sidebar-divider"></div>
+                        <button class="sidebar-item" onclick="doLogout()"><span class="si-icon">🚪</span> Sair</button>
+                    </div>
+                </nav>
+
+                <main class="app-content">
+
+                    <!-- DASHBOARD -->
+                    <div id="view-dashboard">
+                        <div class="page-header">
+                            <div>
+                                <h2 id="dashGreeting">Bom dia! 👋</h2>
+                                <p id="dashDate"></p>
+                            </div>
+                            <button class="btn btn-primary" onclick="openModal()">➕ Novo Serviço</button>
+                        </div>
+                        <div class="stats-row" id="statsRow"></div>
+                        <div
+                            style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px;box-shadow:var(--shadow-sm)">
+                            <div
+                                style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+                                <h3 style="font-size:1rem;font-weight:800;color:var(--brown)">Próximos serviços</h3>
+                                <button class="btn btn-secondary" style="font-size:.8rem;padding:6px 14px"
+                                    onclick="navigate('services')">Ver todos →</button>
+                            </div>
+                            <div id="upcomingList"></div>
+                        </div>
+                    </div>
+
+                    <!-- SERVICES -->
+                    <div id="view-services" style="display:none">
+                        <div class="page-header">
+                            <div>
+                                <h2>Serviços</h2>
+                                <p id="serviceCount">0 serviços</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="openModal()">➕ Novo Serviço</button>
+                        </div>
+                        <div class="view-toggle">
+                            <button id="btnListView" class="active" onclick="setListView('table')">☰ Lista</button>
+                            <button id="btnCalView" onclick="setListView('cal')">📅 Calendário</button>
+                        </div>
+                        <div id="list-panel">
+                            <div class="toolbar">
+                                <div class="toolbar-filters">
+                                    <input type="text" id="searchInput" placeholder="🔍 Buscar..."
+                                        oninput="renderServices()">
+                                    <select id="filterStatus" onchange="renderServices()">
+                                        <option value="">Todos os status</option>
+                                        <option value="Agendado">Agendado</option>
+                                        <option value="Em andamento">Em andamento</option>
+                                        <option value="Concluído">Concluído</option>
+                                    </select>
+                                    <select id="filterTipo" onchange="renderServices()">
+                                        <option value="">Todos os tipos</option>
+                                        <option value="Raspagem">Raspagem</option>
+                                        <option value="Lixamento">Lixamento</option>
+                                        <option value="Instalação">Instalação</option>
+                                        <option value="Restauração">Restauração</option>
+                                        <option value="Manutenção">Manutenção</option>
+                                        <option value="Outro">Outro</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="table-wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th style="width:36px"></th>
+                                            <th>Cliente / Obra</th>
+                                            <th class="col-end">Endereço</th>
+                                            <th>Data início</th>
+                                            <th class="col-dur">Duração</th>
+                                            <th class="col-tip">Tipo</th>
+                                            <th class="col-area">Área</th>
+                                            <th class="col-val">Valor</th>
+                                            <th>Status</th>
+                                            <th style="width:88px"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="serviceTableBody"></tbody>
+                                </table>
+                            </div>
+                            <div class="card-list" id="serviceCardList"></div>
+                        </div>
+                        <div id="cal-panel" style="display:none">
+                            <div class="legend" id="legend1"></div>
+                            <div class="cal-nav"><button onclick="changeMonth(-1)">‹</button>
+                                <h3 id="calTitle"></h3><button onclick="changeMonth(1)">›</button>
+                            </div>
+                            <div class="cal-grid" id="calGrid"></div>
+                        </div>
+                    </div>
+
+                    <!-- CALENDAR FULL -->
+                    <div id="view-calendar" style="display:none">
+                        <div class="page-header">
+                            <div>
+                                <h2>Calendário</h2>
+                                <p>Visão mensal — controle de capacidade diária</p>
+                            </div>
+                            <button class="btn btn-primary" onclick="openModal()">➕ Novo Serviço</button>
+                        </div>
+                        <div class="legend" id="legend2"></div>
+                        <div
+                            style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px;margin-bottom:14px;box-shadow:var(--shadow-sm)">
+                            <div style="font-size:.82rem;font-weight:700;color:var(--brown);margin-bottom:8px">
+                                Capacidade diária</div>
+                            <div style="display:flex;gap:20px;flex-wrap:wrap">
+                                <div class="cap-row" style="flex:1;min-width:160px">
+                                    <span style="white-space:nowrap">🔨 Serviços gerais</span>
+                                    <div class="cap-track">
+                                        <div class="cap-fill ok" style="width:0%" id="capBarSvc"></div>
+                                    </div>
+                                    <span id="capLblSvc"
+                                        style="white-space:nowrap;font-size:.72rem;color:var(--muted)">—</span>
+                                </div>
+                                <div class="cap-row" style="flex:1;min-width:160px">
+                                    <span style="white-space:nowrap">🪚 Raspagens</span>
+                                    <div class="cap-track">
+                                        <div class="cap-fill ok" style="width:0%" id="capBarRasp"></div>
+                                    </div>
+                                    <span id="capLblRasp"
+                                        style="white-space:nowrap;font-size:.72rem;color:var(--muted)">—</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="cal-nav"><button onclick="changeMonth2(-1)">‹</button>
+                            <h3 id="calTitle2"></h3><button onclick="changeMonth2(1)">›</button>
+                        </div>
+                        <div class="cal-grid" id="calGrid2"></div>
+                    </div>
+
+                    <!-- PROFILE -->
+                    <div id="view-profile" style="display:none">
+                        <div class="page-header">
+                            <div>
+                                <h2>Meu Perfil</h2>
+                                <p>Informações da conta</p>
+                            </div>
+                        </div>
+                        <div class="profile-card">
+                            <div class="profile-avatar-lg" id="profileAvatar">A</div>
+                            <h3 id="profileName">Admin</h3>
+                            <p id="profileRole">Administrador</p>
+                            <div class="profile-divider"></div>
+                            <div class="profile-row"><span>Usuário</span><span id="profileUser">—</span></div>
+                            <div class="profile-row"><span>Nível de acesso</span><span id="profileLevel">—</span></div>
+                            <div class="profile-row"><span>Total de serviços</span><span id="profileTotal">—</span>
+                            </div>
+                            <div class="profile-row"><span>Última sessão</span><span id="profileSession">—</span></div>
+                            <div style="margin-top:20px"><button class="btn btn-danger" onclick="doLogout()"
+                                    style="font-size:.87rem">🚪 Encerrar sessão</button></div>
+                        </div>
+                    </div>
+
+                </main>
+            </div>
+        </div>
+
+        <!-- ══ MODAL SERVIÇO ══ -->
+        <div class="modal-overlay" id="modalOverlay">
+            <div class="modal">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Novo Serviço</h3>
+                    <button class="modal-close" onclick="closeModal()">✕</button>
+                </div>
+                <div class="modal-body">
+                    <div class="conflict-banner" id="conflictBanner">
+                        <div class="cb-title">⚠️ Conflito de agenda detectado</div>
+                        <div class="cb-body" id="conflictMsg"></div>
+                        <div class="cb-days" id="conflictDays"></div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group form-full">
+                            <label>Cliente / Obra <span class="req">*</span></label>
+                            <input type="text" id="fCliente" placeholder="Ex.: Residência João Silva">
+                        </div>
+                        <div class="form-group form-full">
+                            <label>Endereço</label>
+                            <input type="text" id="fEndereco" placeholder="Rua, número, bairro, cidade">
+                        </div>
+                        <div class="form-group">
+                            <label>Data de início <span class="req">*</span></label>
+                            <input type="date" id="fData" oninput="onDateOrDurChange()">
+                        </div>
+                        <div class="form-group">
+                            <label>Duração (dias) <span class="req">*</span></label>
+                            <input type="number" id="fDuracao" value="1" min="1" max="60" oninput="onDateOrDurChange()">
+                            <div class="dur-preview" id="durPreview"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Horário de início</label>
+                            <input type="time" id="fHorario">
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Serviço</label>
+                            <select id="fTipo" onchange="onDateOrDurChange()">
+                                <option>Raspagem</option>
+                                <option>Lixamento</option>
+                                <option>Instalação</option>
+                                <option>Restauração</option>
+                                <option>Manutenção</option>
+                                <option>Outro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select id="fStatus">
+                                <option>Agendado</option>
+                                <option>Em andamento</option>
+                                <option>Concluído</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Área (m²)</label>
+                            <input type="number" id="fArea" placeholder="Ex.: 45" min="0" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label>Valor (R$)</label>
+                            <input type="number" id="fValor" placeholder="Ex.: 1200" min="0" step="0.01">
+                        </div>
+                        <div class="form-group form-full">
+                            <label>Observações</label>
+                            <textarea id="fObs" placeholder="Materiais, detalhes de acesso, avisos..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+                        <button class="btn btn-primary" id="btnSave" onclick="saveService()">💾 Salvar serviço</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ ALERT / CAPACITY WARNING ══ -->
+        <div class="alert-overlay" id="alertOverlay">
+            <div class="alert-box">
+                <div class="alert-header">
+                    <div class="alert-icon">⚠️</div>
+                    <h4 id="alertTitle">Capacidade excedida</h4>
+                </div>
+                <div class="alert-body">
+                    <p id="alertMsg"></p>
+                    <div class="alert-detail" id="alertDetail"></div>
+                </div>
+                <div class="alert-footer">
+                    <button class="btn btn-secondary" onclick="closeAlert()">Cancelar agendamento</button>
+                    <button class="btn btn-warn" onclick="forceConfirm()">⚠️ Confirmar mesmo assim</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ CONFIRM DELETE ══ -->
+        <div class="confirm-overlay" id="confirmOverlay">
+            <div class="confirm-box">
+                <div class="confirm-icon">🗑️</div>
+                <h4>Remover serviço?</h4>
+                <p>Esta ação não pode ser desfeita.</p>
+                <div class="confirm-btns">
+                    <button class="btn btn-secondary" onclick="closeConfirm()">Cancelar</button>
+                    <button class="btn btn-danger" onclick="confirmDelete()">Remover</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="toast"></div>
+
+        <script>
+            /* ══════════════════════════════════════════════
+               CONSTANTS
+            ══════════════════════════════════════════════ */
+            const MAX_SERVICES = 4;   // máx serviços gerais por dia
+            const MAX_RASPAGENS = 3;   // máx raspagens por dia
+
+            const TYPE_COLORS = {
+                'Raspagem': '#8B4513', 'Lixamento': '#CD853F', 'Instalação': '#556B2F',
+                'Restauração': '#8B008B', 'Manutenção': '#1565C0', 'Outro': '#546E7A'
+            };
+            const TYPE_CLASS = {
+                'Raspagem': 't-raspagem', 'Lixamento': 't-lixamento', 'Instalação': 't-instalacao',
+                'Restauração': 't-restauracao', 'Manutenção': 't-manutencao', 'Outro': 't-outro'
+            };
+
+            const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+            const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+            /* ══════════════════════════════════════════════
+               DATABASE
+            ══════════════════════════════════════════════ */
+            const DB = {
+                _key: 'salenco_db_v3',
+                load() {
+                    try { return JSON.parse(localStorage.getItem(this._key)) || this._seed(); }
+                    catch { return this._seed(); }
+                },
+                save(data) { try { localStorage.setItem(this._key, JSON.stringify(data)); } catch (e) { } },
+                _seed() {
+                    const fmt = d => d.toISOString().split('T')[0];
+                    const add = n => { const d = new Date(); d.setDate(d.getDate() + n); return fmt(d); };
+                    return {
+                        users: [
+                            { id: 1, username: 'admin', password: 'salenco2025', name: 'Administrador', role: 'admin', avatar: 'AD' },
+                            { id: 2, username: 'claudinei', password: 'claudinei123', name: 'Claudinei Soares', role: 'operador', avatar: 'CS' },
+                            { id: 3, username: 'anapaula', password: 'anapaula123', name: 'Ana Paula', role: 'operador', avatar: 'AP' },
+                            { id: 4, username: 'ramon', password: 'ramon123', name: 'Ramon Marques', role: 'operador', avatar: 'RM' },
+                            { id: 5, username: 'pedro', password: 'pedro123', name: 'Pedro Brandão', role: 'operador', avatar: 'PB' },
+                            { id: 6, username: 'katia', password: 'katia123', name: 'Kátia Moraes', role: 'operador', avatar: 'KM' }
+                        ],
+                        services: [
+                            { id: 1001, cliente: 'Residência Família Souza', endereco: 'Rua das Acácias, 120 – Moema', data: add(-5), duracao: 2, horario: '08:00', tipo: 'Raspagem', status: 'Concluído', area: 62, valor: 2480, obs: 'Piso carvalho, 3 demãos de verniz.', done: true, createdAt: add(-10) },
+                            { id: 1002, cliente: 'Escritório TechCorp', endereco: 'Av. Paulista, 1200 – Bela Vista', data: add(-3), duracao: 1, horario: '07:30', tipo: 'Lixamento', status: 'Concluído', area: 120, valor: 3600, obs: 'Lixamento fino + selador.', done: true, createdAt: add(-8) },
+                            { id: 1003, cliente: 'Apartamento Sr. Mendes', endereco: 'Rua Augusta, 880 – Consolação', data: add(1), duracao: 2, horario: '09:00', tipo: 'Raspagem', status: 'Agendado', area: 48, valor: 1920, obs: 'Verificar estado do piso antes.', done: false, createdAt: add(-3) },
+                            { id: 1004, cliente: 'Salão Bella Casa', endereco: 'Al. Santos, 234 – Jardins', data: add(3), duracao: 3, horario: '08:00', tipo: 'Restauração', status: 'Agendado', area: 85, valor: 4250, obs: 'Restauração completa, piso antigo.', done: false, createdAt: add(-2) },
+                            { id: 1005, cliente: 'Condomínio Residencial RJ', endereco: 'Av. das Américas, 4000 – Barra RJ', data: add(7), duracao: 5, horario: '07:00', tipo: 'Instalação', status: 'Agendado', area: 200, valor: 8000, obs: 'Instalação de taco novo.', done: false, createdAt: add(-1) },
+                            { id: 1006, cliente: 'Loja Galeria Shopping', endereco: 'Rua Oscar Freire, 1 – Pinheiros', data: add(0), duracao: 1, horario: '06:00', tipo: 'Lixamento', status: 'Em andamento', area: 95, valor: 2850, obs: 'Trabalho noturno, acesso liberado.', done: false, createdAt: add(0) },
+                            { id: 1007, cliente: 'Casa Sr. Roberto', endereco: 'Alameda Jaú, 450 – Jardim América', data: add(1), duracao: 1, horario: '08:00', tipo: 'Raspagem', status: 'Agendado', area: 40, valor: 1600, obs: '', done: false, createdAt: add(0) },
+                        ],
+                        session: null,
+                        meta: { lastId: 1007 }
+                    };
+                }
+            };
+
+            let db = DB.load();
+            let currentUser = null;
+            let calDate = new Date();
+            let calDate2 = new Date();
+            let editingId = null;
+            let deleteTargetId = null;
+            let listView = 'table';
+            let pendingSaveObj = null; // used when user confirms overload
+
+            /* ══════════════════════════════════════════════
+               HELPERS
+            ══════════════════════════════════════════════ */
+            function dateAdd(dateStr, days) {
+                const d = new Date(dateStr + 'T12:00');
+                d.setDate(d.getDate() + days);
+                return d.toISOString().split('T')[0];
+            }
+
+            // Returns array of date strings that a service occupies
+            function serviceDays(s) {
+                const days = [];
+                const dur = Math.max(1, parseInt(s.duracao) || 1);
+                for (let i = 0; i < dur; i++) days.push(dateAdd(s.data, i));
+                return days;
+            }
+
+            // Build per-day capacity map (excluding done services and optionally one id)
+            function buildCapMap(excludeId = null) {
+                const map = {}; // date -> { total, raspagens }
+                db.services.forEach(s => {
+                    if (s.done || s.id === excludeId) return;
+                    serviceDays(s).forEach(d => {
+                        if (!map[d]) map[d] = { total: 0, raspagens: 0 };
+                        map[d].total++;
+                        if (s.tipo === 'Raspagem') map[d].raspagens++;
+                    });
+                });
+                return map;
+            }
+
+            // Check capacity for a candidate service object; returns array of violation objects per day
+            function checkCapacity(obj) {
+                const capMap = buildCapMap(editingId);
+                const days = serviceDays(obj);
+                const violations = [];
+                days.forEach(d => {
+                    const cur = capMap[d] || { total: 0, raspagens: 0 };
+                    const newTotal = cur.total + 1;
+                    const newRasp = cur.raspagens + (obj.tipo === 'Raspagem' ? 1 : 0);
+                    const msgs = [];
+                    if (newTotal > MAX_SERVICES) msgs.push(`${newTotal} serviços (máx ${MAX_SERVICES})`);
+                    if (newRasp > MAX_RASPAGENS) msgs.push(`${newRasp} raspagens (máx ${MAX_RASPAGENS})`);
+                    if (msgs.length) violations.push({ date: d, msgs });
+                });
+                return violations;
+            }
+
+            function fmtDate(ds) {
+                if (!ds) return '—';
+                return new Date(ds + 'T12:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+            }
+            function fmtDateLong(ds) {
+                if (!ds) return '—';
+                return new Date(ds + 'T12:00').toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+            }
+
+            function tagStatus(status) {
+                const c = status === 'Concluído' ? 'tag-concluido' : status === 'Em andamento' ? 'tag-andamento' : 'tag-agendado';
+                const i = status === 'Concluído' ? '✅' : status === 'Em andamento' ? '🔧' : '📅';
+                return `<span class="tag ${c}">${i} ${status}</span>`;
+            }
+
+            function typeSlug(tipo) {
+                return TYPE_CLASS[tipo] || 't-outro';
+            }
+
+            let toastTimer;
+            function toast(msg, type = '') {
+                const el = document.getElementById('toast');
+                el.textContent = msg;
+                el.className = type ? `show ${type}` : 'show';
+                clearTimeout(toastTimer);
+                toastTimer = setTimeout(() => el.className = '', 3000);
+            }
+
+            /* ══════════════════════════════════════════════
+               SESSION / LOGIN
+            ══════════════════════════════════════════════ */
+            function initSession() {
+                updateLoginStats();
+                const s = db.session;
+                if (s) {
+                    const u = db.users.find(x => x.id === s.userId);
+                    if (u) { currentUser = u; showApp(); return; }
+                }
+                showLogin();
+            }
+
+            function updateLoginStats() {
+                document.getElementById('ls-total').textContent = db.services.length;
+                document.getElementById('ls-pend').textContent = db.services.filter(s => !s.done).length;
+            }
+
+            function showLogin() {
+                updateLoginStats();
+                document.getElementById('screen-login').classList.add('active');
+                document.getElementById('screen-app').classList.remove('active');
+                document.getElementById('loginUser').value = '';
+                document.getElementById('loginPass').value = '';
+                document.getElementById('loginError').classList.remove('show');
+            }
+
+            function showApp() {
+                document.getElementById('screen-login').classList.remove('active');
+                document.getElementById('screen-app').classList.add('active');
+                updateUserUI();
+                navigate('dashboard');
+            }
+
+            function doLogin() {
+                const u = document.getElementById('loginUser').value.trim();
+                const p = document.getElementById('loginPass').value;
+                if (!u || !p) { showLoginErr('Preencha usuário e senha.'); return; }
+                const btn = document.getElementById('btnLogin');
+                const txt = document.getElementById('btnLoginTxt');
+                btn.style.opacity = '.7'; txt.textContent = 'Verificando...';
+                setTimeout(() => {
+                    btn.style.opacity = '1'; txt.textContent = 'Entrar no sistema';
+                    const user = db.users.find(x => x.username === u && x.password === p);
+                    if (!user) { showLoginErr('Usuário ou senha incorretos. Tente novamente.'); return; }
+                    currentUser = user;
+                    db.session = { userId: user.id, loginAt: new Date().toISOString() };
+                    DB.save(db);
+                    showApp();
+                }, 600);
+            }
+
+            function showLoginErr(msg) {
+                document.getElementById('loginErrorMsg').textContent = msg;
+                document.getElementById('loginError').classList.add('show');
+            }
+
+            function doLogout() {
+                currentUser = null; db.session = null; DB.save(db);
+                closeSidebar(); showLogin();
+                toast('Sessão encerrada com segurança.', 'success');
+            }
+
+            function togglePass() {
+                const inp = document.getElementById('loginPass');
+                inp.type = inp.type === 'password' ? 'text' : 'password';
+            }
+
+            /* ══════════════════════════════════════════════
+               NAV
+            ══════════════════════════════════════════════ */
+            function toggleSidebar() {
+                ['hamburger', 'sidebar', 'navOverlay'].forEach(id => {
+                    document.getElementById(id).classList.toggle(id === 'navOverlay' ? 'show' : 'open');
+                });
+            }
+            function closeSidebar() {
+                document.getElementById('hamburger').classList.remove('open');
+                document.getElementById('sidebar').classList.remove('open');
+                document.getElementById('navOverlay').classList.remove('show');
+            }
+
+            function navigate(view) {
+                ['dashboard', 'services', 'calendar', 'profile'].forEach(v => {
+                    document.getElementById('view-' + v).style.display = v === view ? 'block' : 'none';
+                });
+                document.querySelectorAll('.sidebar-item[data-view]').forEach(el => {
+                    el.classList.toggle('active', el.dataset.view === view);
+                });
+                closeSidebar();
+                if (view === 'dashboard') renderDashboard();
+                if (view === 'services') { renderServices(); if (listView === 'cal') renderCal(); }
+                if (view === 'calendar') renderCal2();
+                if (view === 'profile') renderProfile();
+            }
+
+            function updateUserUI() {
+                if (!currentUser) return;
+                document.getElementById('userAvatar').textContent = currentUser.avatar;
+                document.getElementById('userNameChip').textContent = currentUser.name.split(' ')[0];
+            }
+
+            /* ══════════════════════════════════════════════
+               DASHBOARD
+            ══════════════════════════════════════════════ */
+            function renderDashboard() {
+                const h = new Date().getHours();
+                const g = h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
+                document.getElementById('dashGreeting').textContent = `${g}, ${currentUser.name.split(' ')[0]}! 👋`;
+                document.getElementById('dashDate').textContent = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+                const svcs = db.services;
+                const concl = svcs.filter(s => s.done).length;
+                const pend = svcs.filter(s => !s.done).length;
+                const recv = svcs.filter(s => s.done).reduce((a, s) => a + (+s.valor || 0), 0);
+
+                document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card"><div class="sc-label">Total de Serviços</div><div class="sc-value">${svcs.length}</div><div class="sc-sub">cadastrados</div><div class="sc-icon">📋</div></div>
+    <div class="stat-card"><div class="sc-label">Concluídos</div><div class="sc-value">${concl}</div><div class="sc-sub">finalizados</div><div class="sc-icon">✅</div></div>
+    <div class="stat-card"><div class="sc-label">Pendentes</div><div class="sc-value">${pend}</div><div class="sc-sub">aguardando</div><div class="sc-icon">⏳</div></div>
+    <div class="stat-card"><div class="sc-label">Receita (concluídos)</div><div class="sc-value" style="font-size:1.3rem">R$&nbsp;${recv.toLocaleString('pt-BR')}</div><div class="sc-sub">acumulado</div><div class="sc-icon">💰</div></div>
+  `;
+
+                document.getElementById('badgePending').textContent = pend;
+
+                const upcoming = svcs.filter(s => !s.done).sort((a, b) => a.data.localeCompare(b.data)).slice(0, 6);
+                const ul = document.getElementById('upcomingList');
+                if (!upcoming.length) {
+                    ul.innerHTML = `<div class="empty"><div class="empty-icon">🎉</div><h3>Nenhum serviço pendente</h3><p>Todos os serviços estão concluídos!</p></div>`;
+                    return;
+                }
+                ul.innerHTML = upcoming.map(s => {
+                    const dt = fmtDate(s.data);
+                    const dur = (s.duracao || 1) > 1 ? ` · ${s.duracao} dias` : '';
+                    const end = (s.duracao || 1) > 1 ? ` → ${fmtDate(dateAdd(s.data, (s.duracao || 1) - 1))}` : '';
+                    const dot = document.createElement('div');
+                    return `<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)">
+      <div style="min-width:46px;text-align:center;background:var(--surface2);border-radius:8px;padding:5px 3px">
+        <div style="font-size:.65rem;color:var(--muted);font-weight:700">${dt.split(' ')[1]?.toUpperCase() || ''}</div>
+        <div style="font-size:1.15rem;font-weight:900;color:var(--orange);line-height:1">${dt.split(' ')[0]}</div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;color:var(--brown);font-size:.88rem">${s.cliente}</div>
+        <div style="font-size:.76rem;color:var(--muted)">${s.tipo}${s.horario ? ' · ' + s.horario : ''}${dur}${end}${s.area ? ' · ' + s.area + ' m²' : ''}</div>
+      </div>
+      ${tagStatus(s.status)}
+    </div>`;
+                }).join('');
+            }
+
+            /* ══════════════════════════════════════════════
+               SERVICES LIST
+            ══════════════════════════════════════════════ */
+            function setListView(v) {
+                listView = v;
+                document.getElementById('list-panel').style.display = v === 'table' ? 'block' : 'none';
+                document.getElementById('cal-panel').style.display = v === 'cal' ? 'block' : 'none';
+                document.getElementById('btnListView').classList.toggle('active', v === 'table');
+                document.getElementById('btnCalView').classList.toggle('active', v === 'cal');
+                if (v === 'cal') { buildLegend('legend1'); renderCal(); }
+            }
+
+            function renderServices() {
+                const q = (document.getElementById('searchInput').value || '').toLowerCase();
+                const fSt = document.getElementById('filterStatus').value;
+                const fTp = document.getElementById('filterTipo').value;
+                let list = db.services.filter(s => {
+                    const ms = !q || s.cliente.toLowerCase().includes(q) || (s.endereco || '').toLowerCase().includes(q);
+                    return ms && (!fSt || s.status === fSt) && (!fTp || s.tipo === fTp);
+                }).sort((a, b) => a.done !== b.done ? (a.done ? 1 : -1) : a.data.localeCompare(b.data));
+
+                document.getElementById('serviceCount').textContent = `${list.length} serviço${list.length !== 1 ? 's' : ''} encontrado${list.length !== 1 ? 's' : ''}`;
+
+                // TABLE
+                const tbody = document.getElementById('serviceTableBody');
+                tbody.innerHTML = !list.length
+                    ? `<tr><td colspan="10"><div class="empty"><div class="empty-icon">📋</div><h3>Nenhum serviço</h3><p>Ajuste os filtros ou cadastre um novo.</p></div></td></tr>`
+                    : list.map(s => {
+                        const dt = s.data ? new Date(s.data + 'T12:00').toLocaleDateString('pt-BR') : '—';
+                        const dur = (s.duracao || 1) > 1
+                            ? `${s.duracao} dias<br><span style="font-size:.72rem;color:var(--muted)">até ${fmtDate(dateAdd(s.data, (s.duracao || 1) - 1))}</span>`
+                            : '1 dia';
+                        const val = s.valor ? 'R$ ' + Number(s.valor).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '—';
+                        return `<tr class="${s.done ? 'done-row' : ''}">
+          <td><button class="check-circle ${s.done ? 'checked' : ''}" onclick="toggleDone(${s.id})" title="Concluído">${s.done ? '✓' : ''}</button></td>
+          <td><div class="td-name">${s.cliente}</div>${s.endereco ? `<div class="td-sub">${s.endereco}</div>` : ''}</td>
+          <td class="col-end" style="font-size:.81rem;color:var(--muted)">${s.endereco || '—'}</td>
+          <td style="white-space:nowrap;font-size:.84rem">${dt}</td>
+          <td class="col-dur" style="font-size:.84rem">${dur}</td>
+          <td class="col-tip"><span class="tag tag-tipo">${s.tipo}</span></td>
+          <td class="col-area" style="font-size:.84rem">${s.area ? s.area + ' m²' : '—'}</td>
+          <td class="col-val" style="font-size:.84rem">${val}</td>
+          <td>${tagStatus(s.status)}</td>
+          <td><div class="td-actions">
+            <button class="btn-icon" onclick="openModal(${s.id})" title="Editar">✏️</button>
+            <button class="btn-icon del" onclick="askDelete(${s.id})" title="Remover">🗑️</button>
+          </div></td>
+        </tr>`;
+                    }).join('');
+
+                // CARDS mobile
+                const cl = document.getElementById('serviceCardList');
+                cl.innerHTML = !list.length
+                    ? `<div class="empty"><div class="empty-icon">📋</div><h3>Nenhum serviço</h3></div>`
+                    : list.map(s => {
+                        const dt = s.data ? new Date(s.data + 'T12:00').toLocaleDateString('pt-BR') : '—';
+                        const dur = (s.duracao || 1) > 1 ? ` · ${s.duracao} dias` : '';
+                        return `<div class="service-card ${s.done ? 'done' : ''}">
+          <button class="check-circle ${s.done ? 'checked' : ''}" onclick="toggleDone(${s.id})">${s.done ? '✓' : ''}</button>
+          <div class="sc-body">
+            <div class="sc-title">${s.cliente}</div>
+            <div class="sc-meta">📅 ${dt}${dur}${s.horario ? ' · ' + s.horario : ''}${s.area ? ' · ' + s.area + ' m²' : ''}</div>
+            <div class="sc-tags"><span class="tag tag-tipo">${s.tipo}</span>${tagStatus(s.status)}</div>
+          </div>
+          <div class="sc-actions">
+            <button class="btn-icon" onclick="openModal(${s.id})">✏️</button>
+            <button class="btn-icon del" onclick="askDelete(${s.id})">🗑️</button>
+          </div>
+        </div>`;
+                    }).join('');
+            }
+
+            /* ══════════════════════════════════════════════
+               CALENDAR BUILD
+            ══════════════════════════════════════════════ */
+            function buildLegend(elId) {
+                const el = document.getElementById(elId);
+                if (!el) return;
+                el.innerHTML = Object.entries(TYPE_COLORS).map(([tipo, cor]) =>
+                    `<div class="legend-item"><div class="legend-dot" style="background:${cor}"></div>${tipo}</div>`
+                ).join('') + `<div class="legend-item"><div class="legend-dot" style="background:var(--success)"></div>Concluído</div>`;
+            }
+
+            function buildCalendar(date, gridId, titleId, showCapBar = false) {
+                const y = date.getFullYear(), m = date.getMonth();
+                document.getElementById(titleId).textContent = `${MONTHS[m]} ${y}`;
+
+                const firstDay = new Date(y, m, 1).getDay();
+                const daysInM = new Date(y, m + 1, 0).getDate();
+                const prevDays = new Date(y, m, 0).getDate();
+                const today = new Date();
+                const todayStr = today.toISOString().split('T')[0];
+
+                // Build per-day service map (all days a service spans)
+                const dayMap = {}; // dateStr -> [service, ...]
+                db.services.forEach(s => {
+                    serviceDays(s).forEach(d => {
+                        if (!dayMap[d]) dayMap[d] = [];
+                        dayMap[d].push(s);
+                    });
+                });
+
+                // Capacity bar for today (full calendar view)
+                if (showCapBar) {
+                    const cap = dayMap[todayStr] || [];
+                    const totalToday = cap.filter(s => !s.done).length;
+                    const raspToday = cap.filter(s => !s.done && s.tipo === 'Raspagem').length;
+                    const pctSvc = Math.min(100, (totalToday / MAX_SERVICES) * 100);
+                    const pctRasp = Math.min(100, (raspToday / MAX_RASPAGENS) * 100);
+                    const clsSvc = totalToday >= MAX_SERVICES ? 'full' : totalToday >= MAX_SERVICES - 1 ? 'warn' : 'ok';
+                    const clsRasp = raspToday >= MAX_RASPAGENS ? 'full' : raspToday >= MAX_RASPAGENS - 1 ? 'warn' : 'ok';
+                    document.getElementById('capBarSvc').style.width = pctSvc + '%';
+                    document.getElementById('capBarSvc').className = 'cap-fill ' + clsSvc;
+                    document.getElementById('capLblSvc').textContent = `${totalToday}/${MAX_SERVICES}`;
+                    document.getElementById('capBarRasp').style.width = pctRasp + '%';
+                    document.getElementById('capBarRasp').className = 'cap-fill ' + clsRasp;
+                    document.getElementById('capLblRasp').textContent = `${raspToday}/${MAX_RASPAGENS}`;
+                }
+
+                const grid = document.getElementById(gridId);
+                grid.innerHTML = '';
+
+                WEEKDAYS.forEach(d => {
+                    const c = document.createElement('div');
+                    c.className = 'cal-head'; c.textContent = d; grid.appendChild(c);
+                });
+
+                // prev month
+                for (let i = firstDay - 1; i >= 0; i--) {
+                    const c = document.createElement('div');
+                    c.className = 'cal-cell other';
+                    c.innerHTML = `<div class="cal-day">${prevDays - i}</div>`;
+                    grid.appendChild(c);
+                }
+
+                // current month
+                for (let d = 1; d <= daysInM; d++) {
+                    const ds = `${y}-${String(m + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                    const isToday = ds === todayStr;
+                    const evts = dayMap[ds] || [];
+                    const activeEvts = evts.filter(s => !s.done);
+                    const totalActive = activeEvts.length;
+                    const raspActive = activeEvts.filter(s => s.tipo === 'Raspagem').length;
+                    const overload = totalActive > MAX_SERVICES || raspActive > MAX_RASPAGENS;
+                    const nearLimit = !overload && (totalActive === MAX_SERVICES || raspActive === MAX_RASPAGENS);
+
+                    const c = document.createElement('div');
+                    c.className = 'cal-cell' + (isToday ? ' today' : '') + (overload ? ' overloaded' : '');
+
+                    // day header with limit badge
+                    const dayDiv = document.createElement('div');
+                    dayDiv.className = 'cal-day';
+                    dayDiv.innerHTML = `<span>${d}</span>`;
+                    if (totalActive > 0) {
+                        const badge = document.createElement('span');
+                        badge.className = 'cal-limit-badge' + (overload ? '' : nearLimit ? ' warn' : '');
+                        if (overload || nearLimit) {
+                            badge.textContent = `${totalActive}/${MAX_SERVICES}`;
+                            dayDiv.appendChild(badge);
+                        }
+                    }
+                    c.appendChild(dayDiv);
+
+                    // events — show start-day events; multi-day get a span bar
+                    const MAX_SHOW = 3;
+                    let shown = 0;
+                    evts.forEach(s => {
+                        if (shown >= MAX_SHOW) return;
+                        const isStart = s.data === ds;
+                        const dur = s.duracao || 1;
+
+                        // Only show bar on start day OR single-day
+                        if (!isStart && dur > 1) {
+                            // show continuation bar (abbreviated)
+                            const bar = document.createElement('div');
+                            bar.className = `cal-dot span-mid ${typeSlug(s.tipo)}${s.done ? ' done-dot' : ''}`;
+                            bar.style.background = s.done ? 'var(--success)' : (TYPE_COLORS[s.tipo] || '#546E7A');
+                            bar.textContent = '▸ ' + s.cliente;
+                            bar.title = `${s.cliente} — ${s.tipo} (dia ${serviceDays(s).indexOf(ds) + 1}/${dur})`;
+                            bar.onclick = () => openModal(s.id);
+                            c.appendChild(bar);
+                            shown++;
+                            return;
+                        }
+                        if (!isStart) return;
+
+                        const dot = document.createElement('div');
+                        dot.className = `cal-dot ${typeSlug(s.tipo)}${s.done ? ' done-dot' : ''}`;
+                        dot.style.background = s.done ? 'var(--success)' : (TYPE_COLORS[s.tipo] || '#546E7A');
+                        const durTxt = dur > 1 ? ` (${dur}d)` : '';
+                        dot.textContent = s.cliente + durTxt;
+                        dot.title = `${s.cliente} — ${s.tipo}${s.horario ? ' às ' + s.horario : ''}${dur > 1 ? ' · ' + dur + ' dias' : ''}`;
+                        dot.onclick = () => openModal(s.id);
+                        c.appendChild(dot);
+                        shown++;
+                    });
+
+                    const remaining = evts.length - shown;
+                    if (remaining > 0) {
+                        const more = document.createElement('div');
+                        more.className = 'cal-more';
+                        more.textContent = `+${remaining} mais`;
+                        c.appendChild(more);
+                    }
+
+                    grid.appendChild(c);
+                }
+
+                // next month padding
+                const total = firstDay + daysInM;
+                const pad = Math.ceil(total / 7) * 7 - total;
+                for (let i = 1; i <= pad; i++) {
+                    const c = document.createElement('div');
+                    c.className = 'cal-cell other';
+                    c.innerHTML = `<div class="cal-day">${i}</div>`;
+                    grid.appendChild(c);
+                }
+            }
+
+            function changeMonth(d) { calDate.setMonth(calDate.getMonth() + d); renderCal(); }
+            function changeMonth2(d) { calDate2.setMonth(calDate2.getMonth() + d); renderCal2(); }
+            function renderCal() { buildCalendar(calDate, 'calGrid', 'calTitle', false); }
+            function renderCal2() { buildLegend('legend2'); buildCalendar(calDate2, 'calGrid2', 'calTitle2', true); }
+
+            /* ══════════════════════════════════════════════
+               MODAL
+            ══════════════════════════════════════════════ */
+            function openModal(id = null) {
+                editingId = id;
+                document.getElementById('modalTitle').textContent = id ? 'Editar Serviço' : 'Novo Serviço';
+                clearForm();
+                if (id !== null) {
+                    const s = db.services.find(x => x.id === id);
+                    if (s) {
+                        document.getElementById('fCliente').value = s.cliente || '';
+                        document.getElementById('fEndereco').value = s.endereco || '';
+                        document.getElementById('fData').value = s.data || '';
+                        document.getElementById('fDuracao').value = s.duracao || 1;
+                        document.getElementById('fHorario').value = s.horario || '';
+                        document.getElementById('fTipo').value = s.tipo || 'Raspagem';
+                        document.getElementById('fStatus').value = s.status || 'Agendado';
+                        document.getElementById('fArea').value = s.area || '';
+                        document.getElementById('fValor').value = s.valor || '';
+                        document.getElementById('fObs').value = s.obs || '';
+                    }
+                }
+                document.getElementById('modalOverlay').classList.add('open');
+                document.getElementById('conflictBanner').classList.remove('show');
+                closeSidebar();
+                onDateOrDurChange();
+                setTimeout(() => document.getElementById('fCliente').focus(), 80);
+            }
+
+            function closeModal() {
+                document.getElementById('modalOverlay').classList.remove('open');
+                editingId = null;
+                pendingSaveObj = null;
+            }
+
+            function clearForm() {
+                ['fCliente', 'fEndereco', 'fData', 'fHorario', 'fArea', 'fValor', 'fObs'].forEach(id => document.getElementById(id).value = '');
+                document.getElementById('fDuracao').value = 1;
+                document.getElementById('fTipo').value = 'Raspagem';
+                document.getElementById('fStatus').value = 'Agendado';
+                document.getElementById('durPreview').classList.remove('show');
+                document.getElementById('conflictBanner').classList.remove('show');
+            }
+
+            document.getElementById('modalOverlay').addEventListener('click', e => {
+                if (e.target === document.getElementById('modalOverlay')) closeModal();
+            });
+
+            // Live preview of date range and conflict check
+            function onDateOrDurChange() {
+                const data = document.getElementById('fData').value;
+                const dur = parseInt(document.getElementById('fDuracao').value) || 1;
+                const prev = document.getElementById('durPreview');
+
+                if (data && dur > 0) {
+                    const endDate = dateAdd(data, dur - 1);
+                    const endFmt = new Date(endDate + 'T12:00').toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' });
+                    const startFmt = new Date(data + 'T12:00').toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' });
+                    if (dur > 1) {
+                        prev.textContent = `📅 ${startFmt} → ${endFmt} (${dur} dias)`;
+                        prev.classList.add('show');
+                    } else {
+                        prev.textContent = `📅 ${startFmt}`;
+                        prev.classList.add('show');
+                    }
+
+                    // Live conflict check
+                    const tipo = document.getElementById('fTipo').value;
+                    const tmpObj = { data, duracao: dur, tipo, id: editingId };
+                    const viols = checkCapacity(tmpObj);
+                    const banner = document.getElementById('conflictBanner');
+                    const daysEl = document.getElementById('conflictDays');
+                    if (viols.length) {
+                        document.getElementById('conflictMsg').textContent =
+                            `Atenção: o serviço ocupa dia(s) com lotação próxima ou excedida.`;
+                        daysEl.innerHTML = viols.map(v =>
+                            `<span class="cb-day">${fmtDate(v.date)}: ${v.msgs.join(', ')}</span>`
+                        ).join('');
+                        banner.classList.add('show');
+                    } else {
+                        banner.classList.remove('show');
+                    }
+                } else {
+                    prev.classList.remove('show');
+                    document.getElementById('conflictBanner').classList.remove('show');
+                }
+            }
+
+            /* ══════════════════════════════════════════════
+               SAVE / CRUD
+            ══════════════════════════════════════════════ */
+            function saveService() {
+                const cliente = document.getElementById('fCliente').value.trim();
+                const data = document.getElementById('fData').value;
+                const duracao = parseInt(document.getElementById('fDuracao').value) || 1;
+                if (!cliente || !data) { toast('Preencha Cliente e Data obrigatoriamente.', 'error'); return; }
+
+                const status = document.getElementById('fStatus').value;
+                const tipo = document.getElementById('fTipo').value;
+                const obj = {
+                    id: editingId !== null ? editingId : (++db.meta.lastId),
+                    cliente,
+                    endereco: document.getElementById('fEndereco').value.trim(),
+                    data, duracao, tipo, status,
+                    horario: document.getElementById('fHorario').value,
+                    area: document.getElementById('fArea').value,
+                    valor: document.getElementById('fValor').value,
+                    obs: document.getElementById('fObs').value.trim(),
+                    done: status === 'Concluído',
+                    createdAt: editingId !== null
+                        ? (db.services.find(x => x.id === editingId)?.createdAt || new Date().toISOString().split('T')[0])
+                        : new Date().toISOString().split('T')[0],
+                };
+
+                // Capacity check (only for non-done services)
+                if (!obj.done) {
+                    const viols = checkCapacity(obj);
+                    if (viols.length) {
+                        pendingSaveObj = obj;
+                        showAlert(viols, obj);
+                        return;
+                    }
+                }
+
+                commitSave(obj);
+            }
+
+            function commitSave(obj) {
+                if (editingId !== null) {
+                    const idx = db.services.findIndex(x => x.id === editingId);
+                    if (idx >= 0) db.services[idx] = obj; else db.services.push(obj);
+                    toast('✅ Serviço atualizado com sucesso!', 'success');
+                } else {
+                    db.services.push(obj);
+                    toast('✅ Serviço cadastrado com sucesso!', 'success');
+                }
+                DB.save(db);
+                closeModal();
+                closeAlert();
+                refreshAll();
+            }
+
+            function toggleDone(id) {
+                const s = db.services.find(x => x.id === id);
+                if (!s) return;
+                s.done = !s.done;
+                s.status = s.done ? 'Concluído' : 'Agendado';
+                DB.save(db);
+                toast(s.done ? '✅ Marcado como concluído!' : 'Serviço reaberto como Agendado.', 'success');
+                refreshAll();
+            }
+
+            function askDelete(id) {
+                deleteTargetId = id;
+                document.getElementById('confirmOverlay').classList.add('open');
+            }
+            function closeConfirm() {
+                document.getElementById('confirmOverlay').classList.remove('open');
+                deleteTargetId = null;
+            }
+            function confirmDelete() {
+                if (deleteTargetId === null) return;
+                db.services = db.services.filter(x => x.id !== deleteTargetId);
+                DB.save(db); closeConfirm();
+                toast('🗑️ Serviço removido.', 'success');
+                refreshAll();
+            }
+
+            function refreshAll() {
+                const activeView = ['dashboard', 'services', 'calendar', 'profile']
+                    .find(v => document.getElementById('view-' + v).style.display !== 'none');
+                if (activeView === 'dashboard') renderDashboard();
+                if (activeView === 'services') { renderServices(); if (listView === 'cal') renderCal(); }
+                if (activeView === 'calendar') renderCal2();
+                document.getElementById('badgePending').textContent = db.services.filter(s => !s.done).length;
+                updateLoginStats();
+            }
+
+            /* ══════════════════════════════════════════════
+               ALERT (CAPACITY WARNING)
+            ══════════════════════════════════════════════ */
+            function showAlert(viols, obj) {
+                const isRaspExceeded = viols.some(v => v.msgs.some(m => m.includes('raspagem')));
+                const isSvcExceeded = viols.some(v => v.msgs.some(m => m.includes('serviço')));
+                const daysAffected = viols.length;
+
+                let title = '⚠️ Limite de agenda atingido';
+                let msg = `O serviço de <strong>${obj.cliente}</strong> `;
+                if (obj.duracao > 1) msg += `(${obj.duracao} dias, ${fmtDate(obj.data)} → ${fmtDate(dateAdd(obj.data, obj.duracao - 1))}) `;
+                msg += `vai ocupar ${daysAffected} dia${daysAffected > 1 ? 's' : ''} que já ${daysAffected > 1 ? 'estão' : 'está'} no limite ou acima da capacidade:`;
+
+                let detail = viols.map(v =>
+                    `<div style="margin-bottom:4px">📅 <b>${fmtDateLong(v.date)}</b>: ${v.msgs.join(' · ')}</div>`
+                ).join('');
+
+                const titleEl = document.getElementById('alertTitle');
+                titleEl.textContent = isRaspExceeded
+                    ? 'Limite de raspagens excedido'
+                    : isSvcExceeded
+                        ? 'Limite de serviços excedido'
+                        : 'Capacidade no limite';
+
+                document.getElementById('alertMsg').innerHTML = msg;
+                document.getElementById('alertDetail').innerHTML = detail;
+                document.getElementById('alertOverlay').classList.add('open');
+            }
+
+            function closeAlert() {
+                document.getElementById('alertOverlay').classList.remove('open');
+                pendingSaveObj = null;
+            }
+
+            function forceConfirm() {
+                if (!pendingSaveObj) return;
+                const obj = pendingSaveObj;
+                commitSave(obj);
+                toast('⚠️ Serviço salvo com lotação excedida.', 'warn');
+            }
+
+            /* ══════════════════════════════════════════════
+               PROFILE
+            ══════════════════════════════════════════════ */
+            function renderProfile() {
+                if (!currentUser) return;
+                document.getElementById('profileAvatar').textContent = currentUser.avatar;
+                document.getElementById('profileName').textContent = currentUser.name;
+                document.getElementById('profileRole').textContent = currentUser.role === 'admin' ? 'Administrador' : 'Operador';
+                document.getElementById('profileUser').textContent = currentUser.username;
+                document.getElementById('profileLevel').textContent = currentUser.role === 'admin' ? 'Administrador' : 'Operador';
+                document.getElementById('profileTotal').textContent = db.services.length + ' serviços';
+                const s = db.session;
+                document.getElementById('profileSession').textContent = s?.loginAt
+                    ? new Date(s.loginAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                    : '—';
+            }
+
+            /* ══════════════════════════════════════════════
+               KEYBOARD
+            ══════════════════════════════════════════════ */
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape') { closeModal(); closeAlert(); closeConfirm(); }
+                if (e.key === 'Enter' && document.getElementById('screen-login').classList.contains('active')) doLogin();
+            });
+
+            /* ══════════════════════════════════════════════
+               BOOT
+            ══════════════════════════════════════════════ */
+            initSession();
+        </script>
+    </body>
+
+    </html>
+    
